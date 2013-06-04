@@ -186,12 +186,16 @@ dialogModule.provider("$dialog", function(){
       if(this.options.keyboard){ body.bind('keydown', this.handledEscapeKey); }
       if(this.options.backdrop && this.options.backdropClick){ this.backdropEl.bind('click', this.handleBackDropClick); }
 
-      this.$scope.$on('$locationChangeSuccess', this.handleLocationChange);
+      this._offLocationChangeSuccess = this.$scope.$on('$locationChangeSuccess', this.handleLocationChange);
     };
 
     Dialog.prototype._unbindEvents = function() {
       if(this.options.keyboard){ body.unbind('keydown', this.handledEscapeKey); }
       if(this.options.backdrop && this.options.backdropClick){ this.backdropEl.unbind('click', this.handleBackDropClick); }
+      if (this._offLocationChangeSuccess) {
+        this._offLocationChangeSuccess();
+        delete this._offLocationChangeSuccess;
+      }
     };
 
     Dialog.prototype._onCloseComplete = function(result) {
